@@ -1,0 +1,25 @@
+.env
+/postgres-data
+
+### FRONTEND
+/frontend/.DS_Store
+/frontend/node_modules
+/frontend/dist
+
+# local env files
+/frontend/.env.local
+/frontend/.env.*.local
+
+# Log files
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*

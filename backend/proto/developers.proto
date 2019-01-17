@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package proto;
+
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
+service DeveloperService {
+    rpc Login(LoginRequest) returns (Token) {
+        option (google.api.http) = {
+            post: "/api/login"
+            body: "*"
+        };
+    }
+    rpc Register(RegisterRequest) returns (Token) {
+        option (google.api.http) = {
+            post: "/api/developers"
+            body: "*"
+        };
+    }
+    rpc Get(UsernameRequest) returns (Developer) {
+        option (google.api.http) = {
+            get: "/api/developers/{username}"
+        };
+    }
+    rpc Update(Developer) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            put: "/api/developers/{username}"
+            body: "*"
+        };
+    }
+    rpc Delete(UsernameRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/api/developers/{username}"
+        };
+    }
+}
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message RegisterRequest {
+    string username = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string password = 4;
+}
+
+message Token {
+    string token = 1;
+}
+
+message UsernameRequest {
+    string username = 1;
+}
+
+message Developer {
+    string username = 1;
+    string first_name = 3;
+    string last_name = 4;
+    string speciality = 5;
+    string timezone = 6;
+    string introduction = 7;
+	string city = 8;
+	string languages = 10;
+
+	repeated Link links = 11;
+	repeated Project projects = 12;
+	repeated SkillGroup skill_groups = 13;
+}
+
+message Link {
+    string title = 1;
+    string url = 2;
+}
+
+message Project {
+	string title = 1;
+	string link = 2;
+	string stack = 3;
+	string scope = 4;
+}
+
+message SkillGroup {
+	string title = 1;
+	repeated Skill skills = 2;
+}
+
+message Skill {
+    string title = 1;
+    uint32 experience = 2;
+}
