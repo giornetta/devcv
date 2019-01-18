@@ -12,7 +12,7 @@
     <div class="hero is-fullheight">
       <div class="hero-body">
         <div class="container has-text-centered">
-          <h1 class="title">Simple CVs! for Developers</h1>
+          <h1 class="title">Simple CVs for Developers</h1>
           
           <button class="button is-large has-shadow is-link" @click="onClick" v-if="!showForm">Get started</button>
           <login-form v-else/>
