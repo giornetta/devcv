@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -9,6 +10,8 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+
+	"github.com/giornetta/devcv/cfg"
 
 	"github.com/giornetta/devcv/auth"
 
@@ -24,20 +27,15 @@ import (
 
 func main() {
 	ctx := context.Background()
-	var (
-		dbHost     = "db"
-		dbPort     = 5432
-		dbUser     = "postgres-dev"
-		dbPassword = "password"
-		dbName     = "dev"
 
-		grpcPort = ":3001"
-		httpPort = ":3000"
-	)
+	c, err := cfg.Load()
+	if err != nil {
+		log.Fatalf("could not load config: %v", err)
+	}
 
-	authService := auth.New("topsecret")
+	authService := auth.New(c.JWTSecret)
 
-	db, err := repository.NewDB(dbHost, dbPort, dbName, dbUser, dbPassword)
+	db, err := repository.NewDB(c.DBHost, c.DBPort, c.DBName, c.DBUser, c.DBPassword)
 	if err != nil {
 		log.Fatalf("could not open db: %v", err)
 	}
@@ -49,7 +47,7 @@ func main() {
 		developersService = developers.NewAuthenticator(developersService, authService)
 	}
 
-	lis, err := net.Listen("tcp", grpcPort)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", c.GRPCPort))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -69,12 +67,12 @@ func main() {
 		grpc.WithInsecure(),
 	}
 
-	if err := proto.RegisterDeveloperServiceHandlerFromEndpoint(ctx, mux, "localhost"+grpcPort, opts); err != nil {
+	if err := proto.RegisterDeveloperServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf("localhost:%d", c.GRPCPort), opts); err != nil {
 		log.Fatal(err)
 	}
 
 	httpServer := &http.Server{
-		Addr:    httpPort,
+		Addr:    fmt.Sprintf(":%d", c.HTTPPort),
 		Handler: allowCORS(mux),
 	}
 
@@ -83,10 +81,10 @@ func main() {
 		httpServer.ListenAndServe()
 	}()
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGTERM, syscall.SIGINT)
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT)
 
-	<-c
+	<-sig
 	log.Println("Shutting down server...")
 	grpcServer.GracefulStop()
 	httpServer.Shutdown(ctx)

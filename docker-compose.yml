@@ -3,14 +3,12 @@ version: '3'
 services:
   db:
     image: postgres
-    environment:
-      POSTGRES_DB: dev
-      POSTGRES_USER: postgres-dev
-      POSTGRES_PASSWORD: password
+    env_file:
+      - .env
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - ${DB_PORT}:5432
 
   backend:
     build:
