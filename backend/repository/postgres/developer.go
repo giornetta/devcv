@@ -1,4 +1,4 @@
-package repository
+package postgres
 
 import (
 	"github.com/giornetta/devcv/devcv"
@@ -9,8 +9,8 @@ type repository struct {
 	db *sqlx.DB
 }
 
-// NewDevelopers returns a PostgreSQL implementation of devcv.DeveloperRepository
-func NewDevelopers(db *sqlx.DB) devcv.DeveloperRepository {
+// NewDeveloperRepository returns a PostgreSQL implementation of devcv.DeveloperRepository
+func NewDeveloperRepository(db *sqlx.DB) devcv.DeveloperRepository {
 	return &repository{db}
 }
 

@@ -1,4 +1,4 @@
-package repository
+package postgres
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// NewDB connects to PostgreSQL, create tables if they don't exist and returns a connection that can be injected into Repositories
-func NewDB(host string, port int, dbname, user, password string) (*sqlx.DB, error) {
+// Connect connects to PostgreSQL, create tables if they don't exist and returns a connection that can be injected into Repositories
+func Connect(host string, port int, dbname, user, password string) (*sqlx.DB, error) {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
 	db, err := sqlx.Open("postgres", psqlInfo)

@@ -6,6 +6,7 @@ import (
 )
 
 type Config struct {
+	DBType     string
 	DBHost     string
 	DBPort     int
 	DBUser     string
@@ -22,18 +23,22 @@ func Load() (*Config, error) {
 	cfg := &Config{}
 
 	// Load env vars related to the DB connection
-	cfg.DBHost = os.Getenv("DB_HOST")
-	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
-	if err != nil {
-		return nil, err
+	cfg.DBType = os.Getenv("DB_TYPE")
+
+	if cfg.DBType == "postgres" {
+		cfg.DBHost = os.Getenv("DB_HOST")
+		port, err := strconv.Atoi(os.Getenv("DB_PORT"))
+		if err != nil {
+			return nil, err
+		}
+		cfg.DBPort = port
+		cfg.DBUser = os.Getenv("DB_USER")
+		cfg.DBPassword = os.Getenv("DB_PASS")
+		cfg.DBName = os.Getenv("DB_NAME")
 	}
-	cfg.DBPort = port
-	cfg.DBUser = os.Getenv("DB_USER")
-	cfg.DBPassword = os.Getenv("DB_PASS")
-	cfg.DBName = os.Getenv("DB_NAME")
 
 	// Load env vars related to server ports
-	port, err = strconv.Atoi(os.Getenv("HTTP_PORT"))
+	port, err := strconv.Atoi(os.Getenv("HTTP_PORT"))
 	if err != nil {
 		return nil, err
 	}

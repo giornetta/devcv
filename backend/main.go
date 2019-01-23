@@ -7,6 +7,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/giornetta/devcv/repository/inmem"
+
+	"github.com/giornetta/devcv/devcv"
+
 	"github.com/giornetta/devcv/cfg"
 	"github.com/giornetta/devcv/server"
 
@@ -14,7 +18,7 @@ import (
 
 	"github.com/giornetta/devcv/developers"
 
-	"github.com/giornetta/devcv/repository"
+	"github.com/giornetta/devcv/repository/postgres"
 	_ "github.com/lib/pq"
 )
 
@@ -28,12 +32,19 @@ func main() {
 
 	authSvc := auth.New(c.JWTSecret)
 
-	db, err := repository.NewDB(c.DBHost, c.DBPort, c.DBName, c.DBUser, c.DBPassword)
-	if err != nil {
-		log.Fatalf("could not open db: %v", err)
+	var repo devcv.DeveloperRepository
+
+	if c.DBType == "postgres" {
+		db, err := postgres.Connect(c.DBHost, c.DBPort, c.DBName, c.DBUser, c.DBPassword)
+		if err != nil {
+			log.Fatalf("could not open db: %v", err)
+		}
+
+		repo = postgres.NewDeveloperRepository(db)
+	} else {
+		repo = inmem.NewDeveloperRepository()
 	}
 
-	repo := repository.NewDevelopers(db)
 	developersSvc := developers.New(repo, authSvc)
 
 	srv := server.New(c.HTTPPort, developersSvc, authSvc)
