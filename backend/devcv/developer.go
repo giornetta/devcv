@@ -4,50 +4,50 @@ import "time"
 
 // A Developer represents all the information about a developer stored in a database
 type Developer struct {
-	Username string `db:"username"`
-	Hash     string `db:"pass"`
+	Username string `json:"username" db:"username"`
+	Hash     string `json:"-" db:"pass"`
 
-	FirstName string `db:"first_name"`
-	LastName  string `db:"last_name"`
+	FirstName string `json:"first_name" db:"first_name"`
+	LastName  string `json:"last_name" db:"last_name"`
 
-	Speciality   string `db:"speciality"`
-	Timezone     string `db:"timezone"`
-	Introduction string `db:"introduction"`
-	City         string `db:"city"`
-	Languages    string `db:"languages"`
+	Speciality   string `json:"speciality" db:"speciality"`
+	Timezone     string `json:"timezone" db:"timezone"`
+	Introduction string `json:"introduction" db:"introduction"`
+	City         string `json:"city" db:"city"`
+	Languages    string `json:"languages" db:"languages"`
 
-	Links       []Link       `db:"-"`
-	Projects    []Project    `db:"-"`
-	SkillGroups []SkillGroup `db:"-"`
+	Links       []Link       `json:"links" db:"-"`
+	Projects    []Project    `json:"projects" db:"-"`
+	SkillGroups []SkillGroup `json:"skill_groups" db:"-"`
 
-	CreatedAt time.Time `db:"created_at"`
-	UpdatedAt time.Time `db:"updated_at"`
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
 // A Project is owned by an user
 type Project struct {
-	Title string `db:"title"`
-	Link  string `db:"link"`
-	Stack string `db:"stack"`
-	Scope string `db:"scope"`
+	Title string `json:"title" db:"title"`
+	Link  string `json:"link" db:"link"`
+	Stack string `json:"stack" db:"stack"`
+	Scope string `json:"scope" db:"scope"`
 }
 
 // A SkillGroup is a group of skills related to each other identified by a title
 type SkillGroup struct {
-	Title  string  `db:"title"`
-	Skills []Skill `db:"-"`
+	Title  string  `json:"title" db:"title"`
+	Skills []Skill `json:"skills" db:"-"`
 }
 
 // A Skill is an individual skill of a developer and it can have an experience level
 type Skill struct {
-	Title      string `db:"title"`
-	Experience int    `db:"experience"`
+	Title      string `json:"title" db:"title"`
+	Experience int    `json:"experience" db:"experience"`
 }
 
 // A Link is a link to a developer's social network profile/website/blog/etc
 type Link struct {
-	Title string `db:"title"`
-	URL   string `db:"url"`
+	Title string `json:"title" db:"title"`
+	URL   string `json:"url" db:"url"`
 }
 
 // The DeveloperRepository interface provides access to developers

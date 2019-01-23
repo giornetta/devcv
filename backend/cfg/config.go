@@ -12,12 +12,12 @@ type Config struct {
 	DBPassword string
 	DBName     string
 
-	GRPCPort int
 	HTTPPort int
 
 	JWTSecret string
 }
 
+// Load gets the needed environmental variables needed to run the server
 func Load() (*Config, error) {
 	cfg := &Config{}
 
@@ -33,12 +33,6 @@ func Load() (*Config, error) {
 	cfg.DBName = os.Getenv("DB_NAME")
 
 	// Load env vars related to server ports
-	port, err = strconv.Atoi(os.Getenv("GRPC_PORT"))
-	if err != nil {
-		return nil, err
-	}
-	cfg.GRPCPort = port
-
 	port, err = strconv.Atoi(os.Getenv("HTTP_PORT"))
 	if err != nil {
 		return nil, err

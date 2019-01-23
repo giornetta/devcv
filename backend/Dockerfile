@@ -1,4 +1,3 @@
-ARG GRPC_PORT=3001
 ARG HTTP_PORT=3000
 
 FROM golang:latest AS builder
@@ -18,7 +17,6 @@ FROM scratch as final
 
 COPY --from=builder /app /app
 
-EXPOSE ${GRPC_PORT}
 EXPOSE ${HTTP_PORT}
 
 ENTRYPOINT [ "/app" ]

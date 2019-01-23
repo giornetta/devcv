@@ -8,19 +8,24 @@ import (
 )
 
 // Service will handle authentication for the API
-type Service struct {
+type Service interface {
+	GenerateToken(username string) (string, error)
+	Authenticate(bearer, username string) error
+}
+
+type service struct {
 	Key string
 }
 
 // New returns an Authenticator Service
-func New(key string) *Service {
-	return &Service{
+func New(key string) Service {
+	return &service{
 		Key: key,
 	}
 }
 
 // GenerateToken generates a JWT based on a username
-func (s *Service) GenerateToken(username string) (string, error) {
+func (s *service) GenerateToken(username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
 	})
@@ -29,7 +34,7 @@ func (s *Service) GenerateToken(username string) (string, error) {
 }
 
 // Authenticate will check if the given token matches the user that should be calling a protected method
-func (s *Service) Authenticate(bearer, username string) error {
+func (s *service) Authenticate(bearer, username string) error {
 	if len(bearer) > 7 && strings.ToUpper(bearer[0:6]) == "BEARER" {
 		bearer = bearer[7:]
 	}
