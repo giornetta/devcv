@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+// Config contains all the required config fields
 type Config struct {
 	DBHost     string
 	DBPort     int
@@ -18,6 +19,7 @@ type Config struct {
 	JWTSecret string
 }
 
+// Load reads the required Environmental Variables
 func Load() (*Config, error) {
 	cfg := &Config{}
 

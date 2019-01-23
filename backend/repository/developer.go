@@ -83,15 +83,6 @@ func (r *repository) Lookup(username string) (*devcv.Developer, error) {
 	if err := r.db.Select(&dev.Links, q, username); err != nil {
 		return &dev, err
 	}
-	/*rows, err = r.db.Query(q, dev.ID)
-	if err != nil {
-		return &dev, err
-	}
-	for rows.Next() {
-		var link domain.Link
-		rows.Scan(&link.Title, &link.URL)
-		dev.Links = append(dev.Links, link)
-	}*/
 
 	// Get Projects
 	q = `
